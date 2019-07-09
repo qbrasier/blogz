@@ -21,8 +21,10 @@ class Blog(db.Model):
     content = db.Column(db.String(255))
     date = db.Column(db.DateTime)
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, user, content, date):    # apparently i need to change this to accept content and title becuase
+        self.user = user                        # im doing the whole program incorrectly
+        self.content = content
+        self.date = date
 
 
 
@@ -36,6 +38,15 @@ def blogs():
 
 @app.route("/newpost", method="POST")
 def newpost():
+    if request.method == 'POST':
+         = request.form['user']
+         = request.form['content']
+         = request.form['date']
+         = request.form['user']
+        new_blog = Task(blog_name)
+        db.session.add(new_blog)
+    db.session.commit()
+
     return "here we will add a new post to the database"
 
 
