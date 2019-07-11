@@ -15,16 +15,15 @@ env = Environment(
 db = SQLAlchemy(app)
 
 class Blog(db.Model):
-
+    #changed this so need to delete databse and remake
     id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.String(20))
+    title = db.Column(db.String(20))
     content = db.Column(db.String(255))
-    date = db.Column(db.DateTime)
+   
 
-    def __init__(self, user, content, date):    # apparently i need to change this to accept content and title becuase
-        self.user = user                        # im doing the whole program incorrectly
+    def __init__(self, content, title):    # apparently i need to change this to accept content and title becuase
         self.content = content
-        self.date = date
+        self.title = title
 
 
 
@@ -32,22 +31,22 @@ class Blog(db.Model):
 def homepage():
     return "hi"
 
-@app.route("/blog")
+@app.route("/blog", methods = ['POST'])
 def blogs():
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        new_blog = Blog(title, content)
+        db.session.add(new_blog)
+        db.session.commit()
+
     return "here we have blogs"
 
-@app.route("/newpost", method="POST")
-def newpost():
-    if request.method == 'POST':
-         = request.form['user']
-         = request.form['content']
-         = request.form['date']
-         = request.form['user']
-        new_blog = Task(blog_name)
-        db.session.add(new_blog)
-    db.session.commit()
+@app.route("/newpost")
+def showBlogForm():
+    template = env.get_template("write_blog.html")
+    return template.render()
 
-    return "here we will add a new post to the database"
 
 
 if __name__ == '__main__':
