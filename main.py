@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, session
 from jinja2 import Template, Environment, FileSystemLoader, select_autoescape
 from flask_sqlalchemy import SQLAlchemy 
 
@@ -29,21 +29,34 @@ class Blog(db.Model):
 
 @app.route("/")
 def homepage():
-    return "hi"
+    return redirect("/blog")
 
-@app.route("/blog", methods = ['POST'])
+@app.route("/blog", methods = ["GET"])
 def blogs():
+    id = request.args.get('id')
+    if id == None:
+        x = Blog.query.all() 
+        for i in x:
+            print(i)
+        return render_template("blogs_page.html", blogs = x)
+    
+    print("test")
+    blog = Blog.query.get(id)
+    return render_template("blog_page.html", blog=blog) 
+    
+
+    #return "here we have blogs. the blog id you are trying to see is " + str(id)
+
+@app.route("/newpost", methods = ['GET','POST'])
+def showBlogForm():
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
         new_blog = Blog(title, content)
         db.session.add(new_blog)
         db.session.commit()
+        return redirect("/blog?id="+str(new_blog.id))
 
-    return "here we have blogs"
-
-@app.route("/newpost")
-def showBlogForm():
     template = env.get_template("write_blog.html")
     return template.render()
 
