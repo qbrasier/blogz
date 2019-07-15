@@ -3,9 +3,10 @@
 
 {% for blogx in blogs %}
 <div class="blog">
-    <p>{{blogx.title}}</p>
+    <p></p>
+    <p><a href="/blog?id={{blogx.id}}">{{blogx.title}}</a></p>
     <p>{{ blogx.content }}</p>
-    <a href="/blog?id={{blogx.id}}">view this blog</a>
+    <p></p>
 </div>
 {% endfor %}
 

@@ -21,7 +21,7 @@ class Blog(db.Model):
     content = db.Column(db.String(255))
    
 
-    def __init__(self, content, title):    # apparently i need to change this to accept content and title becuase
+    def __init__(self, title, content):    # apparently i need to change this to accept content and title becuase
         self.content = content
         self.title = title
 
@@ -52,9 +52,9 @@ def showBlogForm():
     template = env.get_template("write_blog.html")
     if request.method == 'POST':
         if (len(request.form['title']) > 20):
-            return template.render(error="Username too long.")
+            return template.render(error="title too long.")
         if (len(request.form['title']) < 1):
-            return template.render(error="username too short.")
+            return template.render(error="title too short.")
         if (len(request.form['content']) > 200):
             return template.render(error="blog post too long.")
         if (len(request.form['content']) < 1):
