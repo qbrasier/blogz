@@ -49,7 +49,16 @@ def blogs():
 
 @app.route("/newpost", methods = ['GET','POST'])
 def showBlogForm():
+    template = env.get_template("write_blog.html")
     if request.method == 'POST':
+        if (len(request.form['title']) > 20):
+            return template.render(error="Username too long.")
+        if (len(request.form['title']) < 1):
+            return template.render(error="username too short.")
+        if (len(request.form['content']) > 200):
+            return template.render(error="blog post too long.")
+        if (len(request.form['content']) < 1):
+            return template.render(error="blog post too short.")
         title = request.form['title']
         content = request.form['content']
         new_blog = Blog(title, content)
@@ -57,7 +66,7 @@ def showBlogForm():
         db.session.commit()
         return redirect("/blog?id="+str(new_blog.id))
 
-    template = env.get_template("write_blog.html")
+    
     return template.render()
 
 

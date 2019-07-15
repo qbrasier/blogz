@@ -2,8 +2,11 @@
 {% block content %}
 
 {% for blogx in blogs %}
-<p>{{blogx.title}}</p>
-<p>{{ blogx.content }}</p>
+<div class="blog">
+    <p>{{blogx.title}}</p>
+    <p>{{ blogx.content }}</p>
+    <a href="/blog?id={{blogx.id}}">view this blog</a>
+</div>
 {% endfor %}
 
 {% endblock %}

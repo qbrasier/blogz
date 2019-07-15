@@ -1,5 +1,11 @@
 {%extends "base.html"%}
 {%block content%}
+
+{%if error|length%}
+<div class="error">
+    <l>Error! {{error}}</l>
+</div>
+{%endif%}
 <form action="" method="POST">
     <div>
         <l>enter a name for your blog: </l>
