@@ -4,27 +4,35 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:password@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:password@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 
 env = Environment(
-    loader=FileSystemLoader('./Templates'),
+    loader=FileSystemLoader('./templates'),
     autoescape=select_autoescape(['html', 'xml'])
 )
 
 db = SQLAlchemy(app)
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20))
+    password = db.Column(db.String(20))
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
 class Blog(db.Model):
-    #changed this so need to delete databse and remake
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(20))
     content = db.Column(db.String(255))
+    user_id = db.Column(db.Integer, foreign_key=True)
    
-
-    def __init__(self, title, content):    # apparently i need to change this to accept content and title becuase
+    def __init__(self, title, content, user):  
         self.content = content
         self.title = title
-
+        self.user_id = user
 
 
 @app.route("/")
