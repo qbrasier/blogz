@@ -183,10 +183,10 @@ def loginForm():
             return template.render(username_error="This user does not exist.")
         return template.render()
 
-@app.route("/logout", methods=["POST"])
+@app.route("/logout", methods=["GET"])
 def logout():
     session.pop('username', None)
-    return redirect('/')
+    return redirect('/blog')
 
 if __name__ == '__main__':
     app.run()
