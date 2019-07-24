@@ -2,20 +2,24 @@
 
 {%block content%}
     <form method="POST">
-        <br>
-        <l>username:</l>
-        <br>
-        <input type="text" name="username">
-        {{username_error}}
-        <br>
-        <l>password:</l>
-        <br>
-        <input type="text" name="password">
-        {{password_error}}
-        <br>
-        <input type="submit" value="Submit">
-        <br>
-        <br>
+            <p></p>
+            <l>Username:</l>
+            <input type="text" name="username">
+            {%if username_error|length%}
+        
+                    <l>Error! {{username_error}}</l>
+        
+            {%endif%}
+            <p></p>
+            <l>Password:</l>
+            <input type="password" name="password" >
+            {%if password_error|length%}
+        
+                    <l>Error! {{password_error}}</l>
+        
+            {%endif%}
+            <p></p>
+            <input type="submit" value="Submit">
     </form>
     <form action="/signup" method="GET">
         <input type="submit" value="Create Account">

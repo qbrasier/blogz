@@ -6,7 +6,7 @@
 
 <form action="" method="POST">
     <p></p>
-    <l>username:</l>
+    <l>Username:</l>
     <input type="text" name="username" value="{{username}}" >
     {%if username_error|length%}
 
@@ -27,14 +27,6 @@
     {%if password_error2|length%}
 
             <l>Error! {{password_error2}}</l>
-
-    {%endif%}
-    <p></p>
-    <l>E-Mail: (optional)</l>
-    <input type="text" name="email" value="{{email}}">
-    {%if email_error|length%}
-
-            <l>Error! {{email_error}}</l>
 
     {%endif%}
     <p></p>

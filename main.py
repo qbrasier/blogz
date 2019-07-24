@@ -117,8 +117,8 @@ def signupForm():
             password_error1="Make sure there are no spaces in your password."
         if (" " in info['password2']): 
             password_error2="Make sure there are no spaces in your password."
-        if (" " in info['email']):
-            email_error="Make sure there are no spaces in your email"
+        #if (" " in info['email']):
+        #    email_error="Make sure there are no spaces in your email"
         # here we are making sure that the password confirmation matches. from here on we can
         # use validation for only password1 since we know that password1 and password2 match.
         if(not info['password1'] == info['password2']):
@@ -140,22 +140,22 @@ def signupForm():
             password_error2='Your passwords do not match.'
 
         # email validation
-        if not info['email'] == '':
-            if (not info['email'].count('@') == 1) or (not info['email'].count('.') == 1):
-                email_error="Your email is formatted invalidly." 
+        #if not info['email'] == '':
+        #    if (not info['email'].count('@') == 1) or (not info['email'].count('.') == 1):
+        #        email_error="Your email is formatted invalidly." 
         if(len(username_error)==0 and len(password_error1)==0 and len(password_error2)==0 and len(email_error)==0):
             #DONE: add check to see if username is already registered
             if (User.query.filter_by(username=info['username']).first() == None):
                 new_user = User(info['username'],info['password1'])
                 db.session.add(new_user)
                 db.session.commit()
-                return render_template('index.html', username=info['username']) 
+                return redirect('/login') 
                 #TODO: this needs to be changed later to a welcome page
             else:
                 username_error="This username is already taken."
         
         return template.render(username_error=username_error,password_error1=password_error1,password_error2=password_error2,
-            email_error=email_error, username=info['username'],email=info['email'])
+            email_error=email_error, username=info['username'])
     else:    
         return template.render()
 
