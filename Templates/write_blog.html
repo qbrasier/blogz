@@ -1,21 +1,24 @@
 {%extends "base.html"%}
+
 {%block content%}
 
-{%if error|length%}
-<div class="error">
-    <l>Error! {{error}}</l>
-</div>
-{%endif%}
-<form action="" method="POST">
-    <div>
-        <l>enter a name for your blog: </l>
-        <input type="text" name="title" >
+    <p>Write a New Blog</p>
+
+    {%if error|length%}
+    <div class="error">
+        <l>Error! {{error}}</l>
     </div>
-    <div>
-        <textarea rows = "8" cols = "60" name = "content">
-            Enter blog post here.
-        </textarea>
-    </div>
-    <input type="submit" value="submit">
-</form>
+    {%endif%}
+    <form action="" method="POST">
+        <div>
+            <l>enter a name for your blog: </l>
+            <input type="text" name="title" >
+        </div>
+        <div>
+            <textarea rows = "8" cols = "60" name = "content">
+                Enter blog post here.
+            </textarea>
+        </div>
+        <input type="submit" value="submit">
+    </form>
 {% endblock %}

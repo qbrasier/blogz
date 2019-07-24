@@ -2,34 +2,34 @@
 
 {% block content %}
 
+    <p>Register an Account</p>
 
+    <form action="" method="POST">
+        <p></p>
+        <l>Username:</l>
+        <input type="text" name="username" value="{{username}}" >
+        {%if username_error|length%}
 
-<form action="" method="POST">
-    <p></p>
-    <l>Username:</l>
-    <input type="text" name="username" value="{{username}}" >
-    {%if username_error|length%}
+                <l>Error! {{username_error}}</l>
 
-            <l>Error! {{username_error}}</l>
+        {%endif%}
+        <p></p>
+        <l>Password:</l>
+        <input type="password" name="password1" >
+        {%if password_error1|length%}
 
-    {%endif%}
-    <p></p>
-    <l>Password:</l>
-    <input type="password" name="password1" >
-    {%if password_error1|length%}
+                <l>Error! {{password_error1}}</l>
 
-            <l>Error! {{password_error1}}</l>
+        {%endif%}
+        <p></p>
+        <l>Confirm Password:</l>
+        <input type="password" name="password2" >
+        {%if password_error2|length%}
 
-    {%endif%}
-    <p></p>
-    <l>Confirm Password:</l>
-    <input type="password" name="password2" >
-    {%if password_error2|length%}
+                <l>Error! {{password_error2}}</l>
 
-            <l>Error! {{password_error2}}</l>
-
-    {%endif%}
-    <p></p>
-    <input type="submit" value="Submit">
-</form>
+        {%endif%}
+        <p></p>
+        <input type="submit" value="Submit">
+    </form>
 {% endblock %}

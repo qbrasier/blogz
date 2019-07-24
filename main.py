@@ -37,11 +37,17 @@ class Blog(db.Model):
         self.title = title
         self.user_id = user
 
-
+@app.before_request
+def require_login():
+    allowed_routes = ['loginForm', 'signupForm', 'blogs', 'homepage']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
 @app.route("/")
 @app.route("/index")
 def homepage():
-    return redirect("/blog")
+    x = User.query.all() 
+    template = env.get_template("index.html")
+    return template.render(users=x)
 
 @app.route("/blog", methods = ["GET"])
 def blogs():
@@ -59,7 +65,8 @@ def blogs():
 
     if uID != None:
         #render all blogs by this user
-        x = Blog.query.filter_by(user_id=uID).first()
+        #TODO: make this work
+        x = Blog.query.filter_by(user_id=uID).all()
         return render_template("singleUser.html", blogs = x)
 
     print("Something strange happened.")
