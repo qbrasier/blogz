@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, redirect, session
 from jinja2 import Template, Environment, FileSystemLoader, select_autoescape
 from flask_sqlalchemy import SQLAlchemy 
+from sqlalchemy.orm import relationship
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -18,6 +19,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20))
     password = db.Column(db.String(20))
+    blogs = db.relationship("Blog", backref="user")
 
     def __init__(self, username, password):
         self.username = username
@@ -27,7 +29,7 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(20))
     content = db.Column(db.String(255))
-    user_id = db.Column(db.Integer, foreign_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
    
     def __init__(self, title, content, user):  
         self.content = content
@@ -36,21 +38,32 @@ class Blog(db.Model):
 
 
 @app.route("/")
+@app.route("/index")
 def homepage():
     return redirect("/blog")
 
 @app.route("/blog", methods = ["GET"])
 def blogs():
-    id = request.args.get('id')
-    if id == None:
+    bID = request.args.get('id')
+    uID = request.args.get('user')
+    if bID == None and uID == None:
         x = Blog.query.all() 
         for i in x:
             print(i)
         return render_template("blogs_page.html", blogs = x)
-    
-    print("test")
-    blog = Blog.query.get(id)
-    return render_template("blog_page.html", blog=blog) 
+    if bID != None:
+        #render a single blog like before
+        blog = Blog.query.get(bID)
+        return render_template("blog_page.html", blog=blog) 
+
+    if uID != None:
+        #render all blogs by this user
+        x = Blog.query.filter_by(user_id=uID).first()
+        return render_template("singleUser.html", blogs = x)
+
+    print("Something strange happened.")
+
+    return "something strange happened." 
     
 
     #return "here we have blogs. the blog id you are trying to see is " + str(id)
@@ -73,11 +86,83 @@ def showBlogForm():
         db.session.add(new_blog)
         db.session.commit()
         return redirect("/blog?id="+str(new_blog.id))
-
-    
     return template.render()
 
+@app.route("/signup", methods=['GET','POST'])
+def signupForm():
+    username_error = ''
+    password_error1 = ''
+    password_error2 = ''
+    email_error = ''
 
+    
+    template = env.get_template('signup.html')
+    # here we are checking to make sure the user input includes all required fields.
+    
+    if(request.method == 'POST'):
+        info = request.form
+        
+        if (info['username'] == ''):
+            username_error="You are missing a username."
+        if (info['password1'] == ''):    
+            password_error1="You are missing your password."
+        if (info['password2'] == ''): 
+            password_error2="You are missing your password."
+
+
+        if (" " in info['username']):
+            username_error="Make sure there are no spaces in your username."
+        if (" " in info['password1']):    
+            password_error1="Make sure there are no spaces in your password."
+        if (" " in info['password2']): 
+            password_error2="Make sure there are no spaces in your password."
+        if (" " in info['email']):
+            email_error="Make sure there are no spaces in your email"
+        # here we are making sure that the password confirmation matches. from here on we can
+        # use validation for only password1 since we know that password1 and password2 match.
+        if(not info['password1'] == info['password2']):
+            password_error2='Your passwords do not match.'
+
+        # username and password length validation
+        if(len(info['username']) > 20):
+            username_error="Your username is too long. Please make sure it is between 3 and 20 characters in length."
+        if(len(info['username']) < 3):
+            username_error="Your username is too short. Please make sure it is between 3 and 20 characters in length." 
+        if(len(info['password1']) > 20):
+            password_error1="Your password is too long. Please make sure it is between 3 and 20 characters in length."
+        if(len(info['password1']) < 3):
+            password_error1="Your password is too short. Please make sure it is between 3 and 20 characters in length." 
+
+        # here we are making sure that the password confirmation matches. from here on we can
+        # use validation for only password1 since we know that password1 and password2 match.
+        if(not info['password1'] == info['password2']):
+            password_error2='Your passwords do not match.'
+
+        # email validation
+        if not info['email'] == '':
+            if (not info['email'].count('@') == 1) or (not info['email'].count('.') == 1):
+                email_error="Your email is formatted invalidly." 
+        if(len(username_error)==0 and len(password_error1)==0 and len(password_error2)==0 and len(email_error)==0):
+            new_user = User(info['username'],info['password1'])
+            db.session.add(new_user)
+            db.session.commit()
+            return render_template('index.html', username=info['username']) 
+            #TODO: this needs to be changed later to a welcome page
+        
+        return template.render(username_error=username_error,password_error1=password_error1,password_error2=password_error2,
+            email_error=email_error, username=info['username'],email=info['email'])
+    else:    
+        return template.render()
+
+@app.route("/login")
+def loginForm():
+    template = env.get_template("login.html")
+    return template.render()
+
+@app.route("/logout", methods=["POST"])
+def logout():
+
+    return "blank"
 
 if __name__ == '__main__':
     app.run()
