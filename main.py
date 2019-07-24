@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:password@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
+app.secret_key = b'p8uasdhaosnd98sayd97yahs23>>>>><.'
 
 env = Environment(
     loader=FileSystemLoader('./templates'),
@@ -62,7 +63,6 @@ def blogs():
         return render_template("singleUser.html", blogs = x)
 
     print("Something strange happened.")
-
     return "something strange happened." 
     
 
@@ -72,6 +72,8 @@ def blogs():
 def showBlogForm():
     template = env.get_template("write_blog.html")
     if request.method == 'POST':
+        if (session['username'] == None):
+            return redirect('/login')
         if (len(request.form['title']) > 20):
             return template.render(error="title too long.")
         if (len(request.form['title']) < 1):
@@ -82,7 +84,7 @@ def showBlogForm():
             return template.render(error="blog post too short.")
         title = request.form['title']
         content = request.form['content']
-        new_blog = Blog(title, content)
+        new_blog = Blog(title, content, User.query.filter_by(username=session['username']).first().id )
         db.session.add(new_blog)
         db.session.commit()
         return redirect("/blog?id="+str(new_blog.id))
@@ -95,7 +97,6 @@ def signupForm():
     password_error2 = ''
     email_error = ''
 
-    
     template = env.get_template('signup.html')
     # here we are checking to make sure the user input includes all required fields.
     
@@ -143,26 +144,49 @@ def signupForm():
             if (not info['email'].count('@') == 1) or (not info['email'].count('.') == 1):
                 email_error="Your email is formatted invalidly." 
         if(len(username_error)==0 and len(password_error1)==0 and len(password_error2)==0 and len(email_error)==0):
-            new_user = User(info['username'],info['password1'])
-            db.session.add(new_user)
-            db.session.commit()
-            return render_template('index.html', username=info['username']) 
-            #TODO: this needs to be changed later to a welcome page
+            #DONE: add check to see if username is already registered
+            if (User.query.filter_by(username=info['username']).first() == None):
+                new_user = User(info['username'],info['password1'])
+                db.session.add(new_user)
+                db.session.commit()
+                return render_template('index.html', username=info['username']) 
+                #TODO: this needs to be changed later to a welcome page
+            else:
+                username_error="This username is already taken."
         
         return template.render(username_error=username_error,password_error1=password_error1,password_error2=password_error2,
             email_error=email_error, username=info['username'],email=info['email'])
     else:    
         return template.render()
 
-@app.route("/login")
+@app.route("/login", methods=['GET','POST'])
 def loginForm():
     template = env.get_template("login.html")
-    return template.render()
+    if request.method == 'GET':
+        #print
+        return template.render()
+    if request.method == 'POST':
+        info = request.form
+        print('username:' + info['username'])
+        if info['username'] == None or info['username'] == '':
+            return template.render(username_error='You need to enter a username')
+        if User.query.filter_by(username=info['username']).first():
+            print('this user exists')
+            if info['password'] == User.query.filter_by(username=info['username']).first().password:
+                session['username'] = info['username']
+                print('logging user in')
+                return redirect('/blog')
+            else:
+                return template.render(password_error="Invalid password.")
+        else:
+            print('this user does not exist')
+            return template.render(username_error="This user does not exist.")
+        return template.render()
 
 @app.route("/logout", methods=["POST"])
 def logout():
-
-    return "blank"
+    session.pop('username', None)
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run()

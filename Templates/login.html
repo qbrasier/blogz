@@ -1,12 +1,23 @@
 {% extends "base.html" %}
 
 {%block content%}
-<form method="POST">
-    <input type="text" name="username">
-    <input type="text" name="password">
-    <input type="submit" value="Submit">
-</form>
-<form action="/signup">
-    <input type="submit" value="Sign Up">
-</form>
+    <form method="POST">
+        <br>
+        <l>username:</l>
+        <br>
+        <input type="text" name="username">
+        {{username_error}}
+        <br>
+        <l>password:</l>
+        <br>
+        <input type="text" name="password">
+        {{password_error}}
+        <br>
+        <input type="submit" value="Submit">
+        <br>
+        <br>
+    </form>
+    <form action="/signup">
+        <input type="submit" value="Sign Up">
+    </form>
 {% endblock %}
