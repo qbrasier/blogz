@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, session
+from flask import Flask, request, render_template, redirect, session, url_for
 from jinja2 import Template, Environment, FileSystemLoader, select_autoescape
 from flask_sqlalchemy import SQLAlchemy 
 from sqlalchemy.orm import relationship
@@ -40,15 +40,16 @@ class Blog(db.Model):
 
 @app.before_request
 def require_login():
-    allowed_routes = ['loginForm', 'signupForm', 'blogs', 'homepage']
+    allowed_routes = ['loginForm', 'signupForm', 'blogs', 'homepage', 'static']
     if request.endpoint not in allowed_routes and 'username' not in session:
         return redirect('/login')
 @app.route("/")
 @app.route("/index")
 def homepage():
     x = User.query.all() 
-    template = env.get_template("index.html")
-    return template.render(users=x)
+    #template = env.get_template("index.html")
+    #return template.render(users=x)
+    return render_template("index.html", users=x)
 
 @app.route("/blog", methods = ["GET"])
 def blogs():
@@ -89,20 +90,20 @@ def showBlogForm():
         if (session['username'] == None):
             return redirect('/login')
         if (len(request.form['title']) > 20):
-            return template.render(error="title too long.")
+            return render_template("write_blog.html", error="title too long.")
         if (len(request.form['title']) < 1):
-            return template.render(error="title too short.")
+            return render_template("write_blog.html", error="title too short.")
         if (len(request.form['content']) > 200):
-            return template.render(error="blog post too long.")
+            return render_template("write_blog.html", error="blog post too long.")
         if (len(request.form['content']) < 1):
-            return template.render(error="blog post too short.")
+            return render_template("write_blog.html", error="blog post too short.")
         title = request.form['title']
         content = request.form['content']
         new_blog = Blog(title, content, User.query.filter_by(username=session['username']).first().id )
         db.session.add(new_blog)
         db.session.commit()
         return redirect("/blog?id="+str(new_blog.id))
-    return template.render()
+    return render_template("write_blog.html")
 
 @app.route("/signup", methods=['GET','POST'])
 def signupForm():
@@ -168,22 +169,22 @@ def signupForm():
             else:
                 username_error="This username is already taken."
         
-        return template.render(username_error=username_error,password_error1=password_error1,password_error2=password_error2,
+        return render_template("signup.html", username_error=username_error,password_error1=password_error1,password_error2=password_error2,
             email_error=email_error, username=info['username'])
     else:    
-        return template.render()
+        return render_template("signup.html")
 
 @app.route("/login", methods=['GET','POST'])
 def loginForm():
     template = env.get_template("login.html")
     if request.method == 'GET':
         #print
-        return template.render()
+        return render_template("login.html")
     if request.method == 'POST':
         info = request.form
         print('username:' + info['username'])
         if info['username'] == None or info['username'] == '':
-            return template.render(username_error='You need to enter a username')
+            return render_template("login.html", username_error='You need to enter a username')
         if User.query.filter_by(username=info['username']).first():
             print('this user exists')
             if info['password'] == User.query.filter_by(username=info['username']).first().password:
@@ -191,11 +192,11 @@ def loginForm():
                 print('logging user in')
                 return redirect('/blog')
             else:
-                return template.render(password_error="Invalid password.")
+                return render_template("login.html", password_error="Invalid password.")
         else:
             print('this user does not exist')
-            return template.render(username_error="This user does not exist.")
-        return template.render()
+            return render_template("login.html", username_error="This user does not exist.")
+        return render_template("login.html")
 
 @app.route("/logout", methods=["GET"])
 def logout():

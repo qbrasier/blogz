@@ -1,0 +1,56 @@
+
+*{
+   font-family: monospace; 
+}
+
+a:link, a:visited {
+
+    color: white;
+
+  }
+  
+  a:hover, a:active {
+    color: black;
+    background-color: rgb(255, 255, 255);
+  }
+
+body {
+    outline: 5px solid black;
+    background: rgb(145, 145, 145);
+    color: rgb(255, 255, 255)5, 255, 254);
+    padding:2em;
+ }
+
+.navigation{
+    outline: 2px solid whitesmoke;
+    width: 8em;
+    padding: 1em;
+    margin: 1em;
+    float: left;
+    overflow: auto;
+    
+}
+
+
+.blog, .user, .newblog, .register{
+    outline: 2px solid whitesmoke;
+    width: 54em;
+    padding:1em;
+  
+    margin: auto; 
+    margin-top: 2em;
+}
+.title{
+    color: ghostwhite;
+    font-size: 1.5em;
+    font-weight: bold;
+    
+}
+.content{
+    color: snow;
+}
+.author{
+    color: antiquewhite;
+    font-size: .9em;
+    font-style: italic;
+}

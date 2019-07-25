@@ -1,29 +1,30 @@
 {% extends "base.html" %}
 
 {%block content%}
-
-    <p>Sign In</p>
-    <form method="POST">
-            <p></p>
-            <l>Username:</l>
-            <input type="text" name="username">
-            {%if username_error|length%}
-        
-                    <l>Error! {{username_error}}</l>
-        
-            {%endif%}
-            <p></p>
-            <l>Password:</l>
-            <input type="password" name="password" >
-            {%if password_error|length%}
-        
-                    <l>Error! {{password_error}}</l>
-        
-            {%endif%}
-            <p></p>
-            <input type="submit" value="Submit">
-    </form>
-    <form action="/signup" method="GET">
-        <input type="submit" value="Create Account">
-    </form>
+    <div class="login">
+        <p>Sign In</p>
+        <form method="POST">
+                <p></p>
+                <l>Username:</l>
+                <input type="text" name="username">
+                {%if username_error|length%}
+            
+                        <l>Error! {{username_error}}</l>
+            
+                {%endif%}
+                <p></p>
+                <l>Password:</l>
+                <input type="password" name="password" >
+                {%if password_error|length%}
+            
+                        <l>Error! {{password_error}}</l>
+            
+                {%endif%}
+                <p></p>
+                <input type="submit" value="Submit">
+        </form>
+        <form action="/signup" method="GET">
+            <input type="submit" value="Create Account">
+        </form>
+    </div>
 {% endblock %}
