@@ -164,7 +164,9 @@ def signupForm():
                 new_user = User(info['username'],info['password1'])
                 db.session.add(new_user)
                 db.session.commit()
-                return redirect('/login') 
+                session['username'] = info['username']
+                print('logging user in')
+                return redirect('/newpost')
                 #TODO: this needs to be changed later to a welcome page
             else:
                 username_error="This username is already taken."
@@ -190,7 +192,7 @@ def loginForm():
             if info['password'] == User.query.filter_by(username=info['username']).first().password:
                 session['username'] = info['username']
                 print('logging user in')
-                return redirect('/blog')
+                return redirect('/newpost')
             else:
                 return render_template("login.html", password_error="Invalid password.")
         else:
