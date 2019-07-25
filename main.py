@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:password@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
+#app.config['SERVER_NAME']='192.168.1.146:5000'
 app.secret_key = b'p8uasdhaosnd98sayd97yahs23>>>>><.'
 
 env = Environment(
@@ -61,13 +62,19 @@ def blogs():
     if bID != None:
         #render a single blog like before
         blog = Blog.query.get(bID)
-        return render_template("blog_page.html", blog=blog) 
+        username = blog.user.username
+        userID = blog.user.id
+        print('username should be '+username)
+        return render_template("blog_page.html", blog=blog, userID=userID) 
 
     if uID != None:
         #render all blogs by this user
-        #TODO: make this work
+        #DONE: make this work
+        print("the user id should be " +uID)
         x = Blog.query.filter_by(user_id=uID).all()
-        return render_template("singleUser.html", blogs = x)
+        y = User.query.get(uID)
+        print(y.username)
+        return render_template("singleUser.html", blogs = x, username=y.username )
 
     print("Something strange happened.")
     return "something strange happened." 
@@ -196,4 +203,4 @@ def logout():
     return redirect('/blog')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')

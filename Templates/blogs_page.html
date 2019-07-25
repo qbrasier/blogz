@@ -1,13 +1,14 @@
 {%extends "base.html"%}
 {% block content %}
 
-{% for blogx in blogs %}
-<div class="blog">
-    <p></p>
-    <p><a href="/blog?id={{blogx.id}}">{{blogx.title}}</a></p>
-    <p>{{ blogx.content }}</p>
-    <p></p>
-</div>
-{% endfor %}
+    {% for blogx in blogs %}
+        <div class="blog">
+            <p></p>
+            <p><a href="/blog?id={{blogx.id}}">{{blogx.title}}</a></p>
+            <p>{{ blogx.content }}</p>
+            <p>written by <a href="/blog?user={{blogx.user_id}}">{{ blogx.user.username }}</a> </p>
+            <p></p>
+        </div>
+    {% endfor %}
 
 {% endblock %}
