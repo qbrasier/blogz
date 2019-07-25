@@ -1,6 +1,7 @@
 
 *{
    font-family: monospace; 
+
 }
 
 a:link, a:visited {
@@ -32,13 +33,22 @@ body {
 }
 
 
-.blog, .user, .newblog, .register{
+.blog, .user, .newblog, .register, .login{
     outline: 2px solid whitesmoke;
     width: 54em;
     padding:1em;
   
     margin: auto; 
     margin-top: 2em;
+}
+.newblog{
+    text-align: center;
+    font-size: 1.0em;
+    outline: 1em ridge black;
+    background-color:rgb(124, 124, 124);
+    padding-left: 1em;
+    padding-right: 1em;
+    
 }
 .title{
     color: ghostwhite;
